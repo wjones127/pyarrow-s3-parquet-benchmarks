@@ -61,7 +61,8 @@ results %>%
     out_size_mb = "Result Size (MB)",
     runtime = "Runtime (s)",
     throughput_mbps = "Throughput (MBps)"
-  )
+  ) %>%
+  as_raw_html()
 ```
 
 ## Discussion
