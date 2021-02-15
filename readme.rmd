@@ -16,10 +16,25 @@ results <- read_parquet('results.parquet') %>%
   mutate(num_columns = as.factor(ifelse(is.na(num_columns), 'All', as.character(num_columns))),
          throughput_mbps = out_size / 1024 / 1024 / runtime)
 
-ggplot(results, aes(x = method, y = throughput_mbps)) +
-  geom_col() +
-  facet_grid(rows = vars(num_columns), cols = vars(num_files))
-  
+ggplot(results, aes(x = method, y = throughput_mbps, fill = num_columns)) +
+  geom_col(position='dodge') +
+  scale_y_log10() +
+  labs(
+    title="Throughput (MBps) of Reading Parquet from S3",
+    caption="Throughput defined as result size in MB divided by load time",
+    y="Throughput (MBps)",
+    fill="Number of Columns"
+  )
+  #facet_grid(rows = vars(num_columns), cols = vars(num_files))
+
+ggplot(results, aes(x = method, y = runtime, fill = num_columns)) +
+  geom_col(position='dodge') +
+  labs(
+    title="Time to Reading Parquet from S3",
+    caption="Throughput defined as result size in MB divided by load time",
+    y="Run time (s)",
+    fill="Number of Columns"
+  )
 ```
 
 ```{r}

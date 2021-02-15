@@ -1,20 +1,20 @@
 PyArrow Read S3 Parquet Benchmarks
 ================
 
-![](readme_files/figure-gfm/load%20data-1.png)<!-- -->
+![](readme_files/figure-gfm/load%20data-1.png)<!-- -->![](readme_files/figure-gfm/load%20data-2.png)<!-- -->
 
     ## # A tibble: 9 x 6
     ##   num_files num_columns method            runtime  out_size throughput_mbps
     ##       <int> <fct>       <chr>               <dbl>     <int>           <dbl>
-    ## 1         1 1           Local Filesystem     1.19 687650240          550.  
-    ## 2         1 1           PyArrow s3fs       111.   687652368            5.91
-    ## 3         1 1           AWS Data Wrangler   15.3  674510420           41.9 
-    ## 4         1 4           Local Filesystem     1.29 687650240          507.  
-    ## 5         1 4           PyArrow s3fs       111.   687652368            5.89
-    ## 6         1 4           AWS Data Wrangler   14.7  674510420           43.7 
-    ## 7         1 All         Local Filesystem     1.50 687650240          437.  
-    ## 8         1 All         PyArrow s3fs       107.   687652368            6.10
-    ## 9         1 All         AWS Data Wrangler   14.5  674510420           44.3
+    ## 1         1 1           Local Filesystem    0.437  43799374           95.6 
+    ## 2         1 1           PyArrow s3fs        8.64   43799906            4.83
+    ## 3         1 1           AWS Data Wrangler  15.5    43799374            2.70
+    ## 4         1 4           Local Filesystem    0.357 194907202          521.  
+    ## 5         1 4           PyArrow s3fs       28.6   194907734            6.50
+    ## 6         1 4           AWS Data Wrangler  49.2   192717232            3.73
+    ## 7         1 All         Local Filesystem    1.28  687650240          513.  
+    ## 8         1 All         PyArrow s3fs      116.    687652368            5.66
+    ## 9         1 All         AWS Data Wrangler  15.7   674510420           41.0
 
 ## Discussion
 

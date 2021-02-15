@@ -28,35 +28,35 @@ def get_files(num_files: int) -> List[str]:
     return [f'2018/{month:02}/data.parquet' for month in range(1, num_files + 1)]
 
 
-def get_columns(num_columns: Optional[int]) -> List[str]:
+def get_columns(num_columns: Optional[int]) -> Optional[List[str]]:
     file = './data/2018/01/data.parquet'
     all_columns = ParquetDataset(file).schema.names
     if num_columns is None:
-        return all_columns
+        return None
     else:
         return all_columns[:num_columns]
 
 
-def local_read(files: List[str], columns: List[str]) -> pyarrow.Table:
+def local_read(files: List[str], columns: Optional[List[str]]) -> pyarrow.Table:
     files = [f'data/{path}' for path in files]
-    return ParquetDataset(files).read()
+    return ParquetDataset(files).read(columns=columns)
 
 
-def arrow_s3fs_read(files: List[str], columns: List[str], bucket: str) -> pyarrow.Table:
+def arrow_s3fs_read(files: List[str], columns: Optional[List[str]], bucket: str) -> pyarrow.Table:
     files = [f'{bucket}/{path}' for path in files]
     s3 = fs.S3FileSystem()
-    return ParquetDataset(files, filesystem=s3).read()
+    return ParquetDataset(files, filesystem=s3).read(columns=columns)
 
 
-def s3fs_read(files: List[str], columns: List[str], bucket: str) -> pyarrow.Table:
+def s3fs_read(files: List[str], columns: Optional[List[str]], bucket: str) -> pyarrow.Table:
     files = [f's3://{bucket}/{path}' for path in files]
     s3 = s3fs.S3FileSystem()
-    return ParquetDataset(files, filesystem=s3).read()
+    return ParquetDataset(files, filesystem=s3).read(columns=columns)
 
 
-def datawrangler_read(files: List[str], columns: List[str], bucket: str) -> pyarrow.Table:
+def datawrangler_read(files: List[str], columns: Optional[List[str]], bucket: str) -> pyarrow.Table:
     files = [f's3://{bucket}/{path}' for path in files]
-    df = wr.s3.read_parquet(files)
+    df = wr.s3.read_parquet(files, columns=columns)
     return pyarrow.Table.from_pandas(df)
 
 
