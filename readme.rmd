@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo=FALSE, warning=FALSE)
 library(arrow)
 library(ggplot2)
 library(dplyr)
+library(gt)
 ```
 
 ```{r load data}
@@ -38,7 +39,29 @@ ggplot(results, aes(x = method, y = runtime, fill = num_columns)) +
 ```
 
 ```{r}
-results
+results %>%
+  mutate(out_size_mb = out_size / 1024 / 1024) %>%
+  select(
+    method,
+    num_columns,
+    out_size_mb,
+    runtime,
+    throughput_mbps
+  ) %>%
+  group_by(method) %>%
+  gt() %>%
+  tab_header(
+    title = "S3 Parquet Read Benchmark Results"
+  ) %>%
+  fmt_number(
+    vars(runtime, out_size_mb, throughput_mbps)
+  ) %>%
+  cols_label(
+    num_columns = "Num Columns Read",
+    out_size_mb = "Result Size (MB)",
+    runtime = "Runtime (s)",
+    throughput_mbps = "Throughput (MBps)"
+  )
 ```
 
 ## Discussion
