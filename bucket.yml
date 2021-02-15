@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Sets up S3 bucket to store parquet files
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: Name of bucket
+
+Resources:
+  DataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: BucketOwnerFullControl
+      BucketName:
+        Ref: BucketName

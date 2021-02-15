@@ -1,0 +1,62 @@
+---
+title: "PyArrow Read S3 Parquet Benchmarks"
+output: github_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE)
+
+library(arrow)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r load data}
+results <- read_parquet('results.parquet') %>%
+  mutate(num_columns = as.factor(ifelse(is.na(num_columns), 'All', as.character(num_columns))),
+         throughput_mbps = out_size / 1024 / 1024 / runtime)
+
+ggplot(results, aes(x = method, y = throughput_mbps)) +
+  geom_col() +
+  facet_grid(rows = vars(num_columns), cols = vars(num_files))
+  
+```
+
+```{r}
+results
+```
+
+## Discussion
+
+
+The performance issues with Parquet reads in S3 have been discussed here:
+
+ * https://issues.apache.org/jira/browse/PARQUET-1698
+
+## Setup
+
+Install requirements in virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Then run the setup script
+
+```bash
+python cli init
+```
+
+Now you can run the benchmark:
+
+```bash
+python cli run
+```
+
+When you are finished, cleanup with:
+
+```bash
+python cli cleanup
+```
