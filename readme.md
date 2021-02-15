@@ -1,5 +1,23 @@
 PyArrow Read S3 Parquet Benchmarks
 ================
+2/14/2021
+
+I was implementing a system that reads single parquet files from S3 and
+was surprised how slow it could be. These benchmarks show how the
+performance of reading parquet files from S3 differs from a local
+filesystem.
+
+I tested both PyArrow and AWS Data Wrangler’s reader. AWS Data Wrangler
+wraps PyArrow’s parquet reader, but implements [it’s own fancy S3
+filesystem
+abstraction](https://github.com/awslabs/aws-data-wrangler/blob/d5bf86f8a6a7c839224fd4ae6f4aa0305846cc70/awswrangler/s3/_fs.py#L573).
+So we are comparing their S3 interaction, not their deserialization of
+the parquet format.
+
+One caveat on the Data Wrangler implementation: they only expose
+functions that return Pandas DataFrames, so the run time method’s
+benchmarks includes time spent translating from Arrow to Pandas and back
+to Arrow.
 
 ![](readme_files/figure-gfm/load%20data-1.png)<!-- -->![](readme_files/figure-gfm/load%20data-2.png)<!-- -->
 
@@ -353,7 +371,21 @@ All
 
 ## Discussion
 
-The performance issues with Parquet reads in S3 have been discussed
+A few initial conclusions:
+
+First, reading from a local filesystem is *far* more efficient than from
+S3. If you plan to keep the files around and read multiple times, it’s
+likely worth just downloading the whole dataset.
+
+Second, AWS Data Wrangler appears to be exceptionally good at reading
+whole parquet files, but is actually worse than PyArrow’s s3fs at
+reading column subsets. Notably, it’s faster to read the whole file with
+Data Wrangler than read only 4 columns with either method.
+
+PyArrow’s parquet reader may see meaningful improvements when
+ARROW-11601 is complete: <https://github.com/apache/arrow/pull/9482>.
+
+The performance issues with Parquet reads in S3 have also been discussed
 here:
 
   - <https://issues.apache.org/jira/browse/PARQUET-1698>
